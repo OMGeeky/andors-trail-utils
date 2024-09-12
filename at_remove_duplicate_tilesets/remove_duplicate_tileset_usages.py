@@ -180,8 +180,11 @@ def main():
             print(f"file is not a tmx: {arg}")
             continue
 
-        file = f"{arg}.altered.tmx"
-        shutil.copy(arg, file)
+        file = arg
+
+        # for testing uncomment these 2 lines
+        # file = f"{arg}.altered.tmx"
+        # shutil.copy(arg, file)
         remove_duplicate_usages(file)
 
 
