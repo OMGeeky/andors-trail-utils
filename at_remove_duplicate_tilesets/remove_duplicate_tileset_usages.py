@@ -34,7 +34,7 @@ def remove_tileset_with_regex(content, tileset_name, tileset_first_gid):
     first_gid = tileset_first_gid
     name = tileset_name
     modified = re.sub(
-        f' <[^<]*firstgid="{first_gid}"[^<]*({name})[\\S\\s]*?</tileset>\\n',
+        f' <[^<]*firstgid="{first_gid}"[^<]*({name})[\\S\\s]*?</tileset>\\r?\\n',
         "",
         content,
         1,
