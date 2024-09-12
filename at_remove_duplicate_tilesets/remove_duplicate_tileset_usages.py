@@ -5,13 +5,42 @@ import xml.etree.ElementTree
 import zlib
 import gzip
 import struct
+from re import RegexFlag
 from typing import Any
+import re
 
 
 def get_min_gid_after(after: int, tilesets: list[tuple[Any, int]]):
     return min(
         (tileset[1] for tileset in tilesets if tileset[1] > after), default=9999999999
     )
+
+
+def remove_tilesets(
+    filepath: str, duplicates: list[tuple[int, int, int, str, int, int]]
+):
+    print(f"writing file: {filepath}")
+    with open(filepath, "r", encoding="utf-8") as f:
+        content = f.read()
+    for duplicate in duplicates:
+        content = remove_tileset_with_regex(content, duplicate[3], duplicate[0])
+
+    with open(filepath, "w", encoding="utf-8") as f:
+        f.write(content)
+    pass
+
+
+def remove_tileset_with_regex(content, tileset_name, tileset_first_gid):
+    first_gid = tileset_first_gid
+    name = tileset_name
+    modified = re.sub(
+        f' <[^<]*firstgid="{first_gid}"[^<]*({name})[\\S\\s]*?</tileset>\\n',
+        "",
+        content,
+        1,
+        RegexFlag.MULTILINE,
+    )
+    return modified
 
 
 def remove_duplicate_usages(xml_file_path: str):
@@ -27,6 +56,7 @@ def remove_duplicate_usages(xml_file_path: str):
     found_duplicate = len(duplicates) > 0
 
     if not found_duplicate:
+        print("no duplicates found")
         return
 
     # basically a map where the first two numbers are the range, that needs to be
@@ -78,8 +108,11 @@ def remove_duplicate_usages(xml_file_path: str):
                 modified = original.replace(data, modified_data_str)
                 f.write(modified)
 
+    remove_tilesets(xml_file_path, duplicate_usages_maps)
+
     print(
-        f"XML file has unused duplicate tilesets please remove them manually: '{xml_file_path}' "
+        "XML file had duplicate tilesets. They were removed automatically"
+        f", so please check if this worked: '{xml_file_path}' "
     )
 
 
