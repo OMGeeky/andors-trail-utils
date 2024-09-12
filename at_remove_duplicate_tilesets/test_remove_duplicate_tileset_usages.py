@@ -437,7 +437,7 @@ expected_output = """
  <tileset firstgid="8069" name="map_brightport" tilewidth="32" tileheight="32" tilecount="112" columns="16">
   <image source="../drawable/map_brightport.png" width="512" height="224"/>
  </tileset>
-  <tileset firstgid="8309" name="map_tree_3" tilewidth="32" tileheight="32" tilecount="544" columns="32">
+ <tileset firstgid="8309" name="map_tree_3" tilewidth="32" tileheight="32" tilecount="544" columns="32">
   <image source="../drawable/map_tree_3.png" width="1024" height="544"/>
  </tileset>
  <tileset firstgid="8853" name="map_pillar_1" tilewidth="32" tileheight="32" tilecount="128" columns="16">
@@ -485,6 +485,9 @@ class Test(TestCase):
          <image source="../drawable/map_tree_1.png" width="512" height="256"/>
         </tileset>"""
         response = remove_tileset_with_regex(sample_input, "map_tree_1", 8181)
+        if response != expected_output:
+            print(response)
+
         self.assertEqual(
             response, expected_output, "removed stuff was not what we expected"
         )
